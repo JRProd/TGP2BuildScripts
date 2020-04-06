@@ -1,0 +1,6 @@
+*
+!BatchReferences/
+!*.bat
+!*.py
+
+!.gitignore
