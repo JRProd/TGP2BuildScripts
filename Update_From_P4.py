@@ -9,7 +9,7 @@ def p4_sync():
     synced_files = p4.run( 'sync', '-f' )
     return synced_files
 
-# Threaded P$v Sync callback
+# Threaded P4v Sync callback
 def p4_sync_callback( synced_files_from_p4 ):
     global files_synced
     synced_files = synced_files_from_p4
@@ -38,7 +38,7 @@ files_synced = False
 if __name__ == '__main__':
 
     print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 1: Update the local workspcae for P4'.format( game_name ) )
+    print( '{} - Step 1: Update the local workspace for P4'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
     # Perforce Settings
