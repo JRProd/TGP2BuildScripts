@@ -1,10 +1,13 @@
-import Update_Version_Number
-import Update_From_P4
+from UpdateVersionNumber import update_version_number
+from UpdateFromP4 import update_from_P4
+from BuildGame import build_game
+from UploadToDeletedNighly import upload_to_deleted_nightly
 
 if __name__ == '__main__':
     print( '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     print( 'Initiating Build Sequence ')
 
-    success = Update_Version_Number.UpdateVersionNumber()
+    success = update_version_number()
     if success:
-        Update_From_P4.UpdateFromP4()
+        update_from_P4()
+        build_game()

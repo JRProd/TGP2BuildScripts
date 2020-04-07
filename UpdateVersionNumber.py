@@ -4,9 +4,9 @@ from P4 import P4
 
 import Environment as env
 
-game_name = env.GetEnvVariable('Game','game_name')
+game_name = env.get_env_variable('Game','game_name')
 
-def UpdateVersionNumber():
+def update_version_number():
     print( '----------------------------------------------------------------------------------------------------' )
     print( '{} - Step 1: Update the version number'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
@@ -17,9 +17,9 @@ def UpdateVersionNumber():
 
     # Perforce Settings
     p4 = P4()
-    p4.user = env.GetEnvVariable('Perforce', 'user_name')
-    p4.password = env.GetEnvVariable('Perforce', 'user_password')
-    p4.client = env.GetEnvVariable('Perforce', 'client')
+    p4.user = env.get_env_variable('Perforce', 'user_name')
+    p4.password = env.get_env_variable('Perforce', 'user_password')
+    p4.client = env.get_env_variable('Perforce', 'client')
 
     # Connect to the perforce server
     success = p4.connect()
@@ -48,4 +48,4 @@ def UpdateVersionNumber():
     print( 'Uploaded to perforce: ' + version_file_path )
 
 if __name__ == '__main__':
-    UpdateVersionNumber()
+    update_version_number()

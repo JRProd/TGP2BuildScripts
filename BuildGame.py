@@ -1,32 +1,30 @@
-import Environment
 import subprocess
 
-# Build the Game
-# *Original from TexMech - C28 
+import Environment as env
 
-# Here it could be useful to echo the build log to a text file so you can see the error if the build fails.
-print( '----------------------------------------------------------------------' )
-print( 'Step 2: Packaging unreal project into archive ')
-print( '----------------------------------------------------------------------' )
+game_name = env.get_env_variable('Game', 'game_name')
 
-section = "BuildGame"
+def build_game():
 
-base_dir = Environment.GetEnvVariable( section, "base_dir" )
-project_dir = Environment.GetEnvVariable( section, "project_dir" )
-uproject_file = Environment.GetEnvVariable( section, "uproject_file" )
-builds_dir = Environment.GetEnvVariable( section, "builds_dir" )
-build_maps = Environment.GetEnvVariable( section, "build_maps" )
-ue4_batchfiles_dir = Environment.GetEnvVariable( section, "ue4_batchfiles_dir" )
-ue4_binaries_dir = Environment.GetEnvVariable( section, "ue4_binaries_dir" )
+    print( '----------------------------------------------------------------------------------------------------' )
+    print( '{} - Step 3: Starting BuildCookRun'.format( game_name ) )
+    print( '----------------------------------------------------------------------------------------------------' )
 
-print( base_dir )
-print( project_dir )
-print( uproject_file )
-print( builds_dir )
-print( build_maps )
+    section = "Game"
+
+    base_dir = env.get_env_variable( 'Local', "base_dir" )
+    project_dir = env.get_env_variable( section, "project_dir" )
+    uproject_file = env.get_env_variable( section, "uproject_file" )
+    builds_dir = env.get_env_variable( section, "builds_dir" )
+    build_maps = env.get_env_variable( section, "build_maps" )
+
+    ue4_batchfiles_dir = env.get_env_variable( 'Local', "ue4_batchfiles_dir" )
+    ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )
+
+    print(subprocess.run( [ ue4_batchfiles_dir + 'RunUAT.bat', "BuildCookRun", "-project=" + uproject_file, "-noP4", "-nocompile", "-nocompileeditor", "-installed", "-cook", "-stage", "-archive", "-archivedirectory=" + builds_dir, "-package", "-clientconfig=Development", "-ue4exe=" + ue4_binaries_dir + "UE4Editor-Cmd.exe", "-pak", "-prereqs", "-nodebuginfo", "-targetplatform=Win64", "-build", "-CrashReporter", "-utf8output" ] ))
 
 if __name__ == '__main__':
-    print(subprocess.run( [ ue4_batchfiles_dir + 'RunUAT.bat', "BuildCookRun", "-project=" + uproject_file, "-noP4", "-nocompile", "-nocompileeditor", "-installed", "-cook", "-stage", "-archive", "-archivedirectory=" + builds_dir, "-package", "-clientconfig=Development", "-ue4exe=" + ue4_binaries_dir + "UE4Editor-Cmd.exe", "-pak", "-prereqs", "-nodebuginfo", "-targetplatform=Win64", "-build", "-CrashReporter", "-utf8output" ] ))
+    build_game()
 
     #subprocess.call([r"C:\Program Files\Epic Games\UE_4.23\Engine\Build\BatchFiles\RunUAT.bat"] BuildCookRun -project=%uproject_file% -noP4 -nocompile -nocompileeditor -installed -cook -stage -archive -archivedirectory=%builds_dir% -package -clientconfig=Development -ue4exe="C:\Program Files\Epic Games\UE_4.23\Engine\Binaries\Win64\UE4Editor-Cmd.exe" -pak -prereqs -nodebuginfo -targetplatform=Win64 -build -CrashReporter -utf8output
     # subprocess.call("%unreal_batchfiles_dir%'RunUAT.bat', BuildCookRun -project=%uproject_file% -noP4 -nocompile -nocompileeditor -installed -cook -stage -archive -archivedirectory=%builds_dir% -package -clientconfig=Development -ue4exe=%ue4_binaries_dir%'UE4Editor-Cmd.exe' -pak -prereqs -nodebuginfo -targetplatform=Win64 -build -CrashReporter -utf8output" )

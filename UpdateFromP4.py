@@ -37,17 +37,17 @@ p4 = P4()
 synced_files = {}
 files_synced = False
 
-def UpdateFromP4():
-    game_name = env.GetEnvVariable('Game', 'game_name')
+game_name = env.get_env_variable('Game', 'game_name')
 
+def update_from_P4():
     print( '----------------------------------------------------------------------------------------------------' )
     print( '{} - Step 2: Update the local workspace for P4'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
     # Perforce Settings
-    p4.user = env.GetEnvVariable('Perforce', 'user_name')
-    p4.password = env.GetEnvVariable('Perforce', 'user_password')
-    p4.client = env.GetEnvVariable('Perforce', 'client')
+    p4.user = env.get_env_variable('Perforce', 'user_name')
+    p4.password = env.get_env_variable('Perforce', 'user_password')
+    p4.client = env.get_env_variable('Perforce', 'client')
 
     # Connect to the perforce server
     success = p4.connect()
@@ -91,5 +91,5 @@ def UpdateFromP4():
         print( 'All files are current' )
 
 if __name__ == '__main__':
-    UpdateFromP4()
+    update_from_P4()
     
