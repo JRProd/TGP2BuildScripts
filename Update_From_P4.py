@@ -1,7 +1,9 @@
-from P4 import P4
-
 import time
 import threading
+
+from P4 import P4
+
+import Environment as env
 
 # Threaded P4V Sync function
 def p4_sync():
@@ -31,21 +33,21 @@ class Threaded_Callback (threading.Thread):
         self.callback( returnValue )
         threaded_callback_lock.release()
 
-game_name = 'HaberDashers'
+p4 = P4()
 synced_files = {}
 files_synced = False
 
-if __name__ == '__main__':
+def UpdateFromP4():
+    game_name = env.GetEnvVariable('Game', 'game_name')
 
     print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 1: Update the local workspace for P4'.format( game_name ) )
+    print( '{} - Step 2: Update the local workspace for P4'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
     # Perforce Settings
-    p4 = P4()
-    p4.user = 'daily_builds'
-    p4.password = 'gKv52w!*'
-    p4.client = 'NightlyBuild_HaberDashers'
+    p4.user = env.GetEnvVariable('Perforce', 'user_name')
+    p4.password = env.GetEnvVariable('Perforce', 'user_password')
+    p4.client = env.GetEnvVariable('Perforce', 'client')
 
     # Connect to the perforce server
     success = p4.connect()
@@ -88,5 +90,6 @@ if __name__ == '__main__':
     if files_updated == 0:
         print( 'All files are current' )
 
-    print( '{} - Step 1: Complete'.format( game_name ) )
-    input( 'Press Enter to continue...')
+if __name__ == '__main__':
+    UpdateFromP4()
+    
