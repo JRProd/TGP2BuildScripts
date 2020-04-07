@@ -9,7 +9,7 @@ echo ----------------------------------------------------------------------
 
 set base_dir=C:\AutomatedBuilds\C29\TGP2\
 set project_dir=%base_dir%Project_Files\HaberDashers\
-set uproject_file="%project_dir%TGP2Racer.uproject"
+set uproject_file="%project_dir%HaberDashers.uproject"
 set builds_dir=%base_dir%Build_Dir\
 set build_maps="/Game/Maps/Main/Track2/PLVL_Track_2_Main"
 
