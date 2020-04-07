@@ -1,6 +1,7 @@
 from configparser import ConfigParser
+from configparser import ExtendedInterpolation
 
-config = ConfigParser()
+config = ConfigParser( interpolation=ExtendedInterpolation() )
 
 def ParseEnvVariables():
     config.read('config.ini')
