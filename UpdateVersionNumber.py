@@ -47,5 +47,7 @@ def update_version_number():
 
     print( 'Uploaded to perforce: ' + version_file_path )
 
+    return True
+
 if __name__ == '__main__':
     update_version_number()
