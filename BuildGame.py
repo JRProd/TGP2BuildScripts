@@ -10,13 +10,9 @@ def build_game():
     print( '{} - Step 3: Starting BuildCookRun'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
-    section = "Game"
-
-    base_dir = env.get_env_variable( 'Local', "base_dir" )
-    project_dir = env.get_env_variable( section, "project_dir" )
-    uproject_file = env.get_env_variable( section, "uproject_file" )
-    builds_dir = env.get_env_variable( section, "builds_dir" )
-    build_maps = env.get_env_variable( section, "build_maps" )
+    uproject_file = env.get_env_variable( "Game", "uproject_file" )
+    builds_dir = env.get_env_variable( "Game", "builds_dir" )
+    build_maps = env.get_env_variable( "Game", "build_maps" )
 
     ue4_batchfiles_dir = env.get_env_variable( 'Local', "ue4_batchfiles_dir" )
     ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )
