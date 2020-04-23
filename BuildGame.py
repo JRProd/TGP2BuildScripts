@@ -28,7 +28,7 @@ def zip_build():
     now = datetime.now()
     now_str = now.strftime( "%m_%d_%H_%M" )
 
-    file_utils.zip_file_directory( latest_build_dir, builds_dir + "HaberDashers_" + now_str + ".zip" )
+    file_utils.zip_file_directory( latest_build_dir, builds_dir + game_name + "_" + now_str + ".zip" )
 
 
 if __name__ == '__main__':
