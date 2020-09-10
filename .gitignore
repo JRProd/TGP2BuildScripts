@@ -1,6 +1,6 @@
 *
 !BatchReferences/
-!*.bat
-!*.py
+!Scripts/
 
+!Build.py
 !.gitignore
