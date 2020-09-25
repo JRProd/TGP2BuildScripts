@@ -7,7 +7,7 @@ game_name = env.get_env_variable('Game', 'game_name')
 def upload_to_steam():
 
     print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 3: Starting Upload to Steam'.format( game_name ) )
+    print( '{} - Step 5: Starting Upload to Steam'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
     user_name = env.get_env_variable( "Steam", "user_name" )

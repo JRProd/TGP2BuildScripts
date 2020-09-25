@@ -1,5 +1,6 @@
-import datetime
-import json
+import os
+
+from shutil import copy
 
 from P4 import P4, P4Exception
 
@@ -12,20 +13,52 @@ def update_version_number( major, minor, hotfix ):
     print( '{} - Step 2: Update the version number'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
-    uproject_file_name = env.get_env_variable('Game', 'uproject_file')
-    # Load the uproject file
-    with open( uproject_file_name, 'r') as file:
-        uproject_json = json.load( file )
+    try:
+        automatic_versioning = env.get_env_variable('Version', 'automatic')
+    
+    # If no versioning disinction continue
+    except Exception as e:
+        print('Automatic versioning system skipped because no [Version] automatic value found')
+        return True
 
+    if 'False' in automatic_versioning:
+        print('Automatic versioning system skipped because its disabled')
+        return True
+    elif not 'True' in automatic_versioning:
+        print('Unknown value {} in [Version] automatic. Expected "True"/"False" values')
+        return False
+
+    version_number = ""
+
+    # Open ini file
+    version_ini = env.get_env_variable('Version', 'version_ini')
+    version_header = env.get_env_variable('Version', 'version_header')
+    version_tag = env.get_env_variable('Version', 'version_tag')
+    with open( env.get_env_variable('Version', 'version_ini'), 'r') as file:
+        file_list = file.read().split('\n')
+
+    # Parse ini file for specific header
+    after_header = False
+    found_version = False
+    for line_item in file_list:
+        if line_item == version_header:
+            after_header = True
+            
+        if line_item == '':
+            after_header = False
+
+        if after_header and version_tag in line_item:
+            version_item = line_item.split('=')
+            version_number = version_item[1]
+            found_version = True
+        
+    if not found_version:
+        print("Failed to find version number")
+
+    print(version_number)
     # Update the version number
-    if 'Version' in uproject_json:
-        new_version = get_version_number(major, minor, hotfix, uproject_json['Version'])
-        uproject_json['Version'] = new_version
-    else:
-        uproject_json['Version'] = {'Major':'0', 'Minor':'0', 'Hotfix':'1'}
-
-    # Add a pretty version
-    uproject_json['Version']['Pretty'] = str(uproject_json['Version']['Major']) + '.' + str(uproject_json['Version']['Minor']) + '.' + str(uproject_json['Version']['Hotfix'])
+    new_version = get_version_number(major, minor, hotfix, version_number)
+    print( new_version)
 
     # Check the file out from P4
     p4 = P4()
@@ -33,18 +66,28 @@ def update_version_number( major, minor, hotfix ):
     p4.password = env.get_env_variable('Perforce', 'user_password')
     p4.client = env.get_env_variable('Perforce', 'client')
 
-
     try:
         p4.connect()
 
-        p4.run( 'edit', uproject_file_name )
+        p4.run( 'edit', version_ini )
 
-        with open( uproject_file_name, 'w') as file:
-            json.dump( uproject_json, file, indent = 4 )
+        # Open temporary file for writing
+        with open( version_ini + '.tmp', 'w' ) as out_file:
+            with open( version_ini, 'r') as in_file:
+                for line in in_file:
+                    if version_number in line:
+                        # Replace version with new version
+                        out_file.write(version_tag + '=' + new_version)
+                    else:
+                        out_file.write(line)
+
+        # Replace old file with new file
+        copy(version_ini + '.tmp', version_ini)
+        os.remove( version_ini + '.tmp')
 
         change = p4.fetch_change()
-        change._description = '[Daily_Builds] Updated the version number to ' + uproject_json['Version']['Pretty']
-        test = p4.run_submit( change ) 
+        change._description = '[Daily_Builds] Updated the version number to ' + new_version
+        # test = p4.run_submit( change ) 
 
         return True
     except P4Exception:
@@ -57,20 +100,21 @@ def update_version_number( major, minor, hotfix ):
         return False
 
 def get_version_number(major, minor, hotfix, version):
+    split_version = version.split('.')
     if major:
-        version['Major'] = int(version['Major']) + 1
-        version['Minor'] = 0
-        version['Hotfix'] = 0
-        return version
+        split_version[0] = str(int(split_version[0]) + 1)
+        split_version[1] = '0'
+        split_version[2] = '0'
+        return '.'.join(split_version)
 
     if minor:
-        version['Minor'] = int(version['Minor']) + 1
-        version['Hotfix'] = 0
-        return version
+        split_version[1] = str(int(split_version[1]) + 1)
+        split_version[2] = '0'
+        return '.'.join(split_version)
 
     if hotfix:
-        version['Hotfix'] = int(version['Hotfix']) + 1
-        return version
+        split_version[2] = str(int(split_version[2]) + 1)
+        return '.'.join(split_version)
  
 
 if __name__ == '__main__':

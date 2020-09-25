@@ -10,11 +10,10 @@ builds_dir = env.get_env_variable( "Game", "builds_dir" )
 def build_game():
 
     print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 3: Starting BuildCookRun'.format( game_name ) )
+    print( '{} - Step 4: Starting BuildCookRun'.format( game_name ) )
     print( '----------------------------------------------------------------------------------------------------' )
 
     uproject_file = env.get_env_variable( "Game", "uproject_file" )
-    build_maps = env.get_env_variable( "Game", "build_maps" )
 
     ue4_batchfiles_dir = env.get_env_variable( 'Local', "ue4_batchfiles_dir" )
     ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )

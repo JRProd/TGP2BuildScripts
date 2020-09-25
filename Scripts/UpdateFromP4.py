@@ -45,6 +45,7 @@ def update_from_P4():
     print( '----------------------------------------------------------------------------------------------------' )
 
     # Perforce Settings
+    p4.port = "129.119.63.244:1666"
     p4.user = env.get_env_variable('Perforce', 'user_name')
     p4.password = env.get_env_variable('Perforce', 'user_password')
     p4.client = env.get_env_variable('Perforce', 'client')
