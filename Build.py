@@ -18,7 +18,7 @@ if __name__ == '__main__':
         print("[FAILED] Failed to update from perforce")
 
     if success:
-        success = True # build_lighting()
+        success = build_lighting()
         pass
     else:
         print("[FAILED]: Failed to update version number")
@@ -29,5 +29,11 @@ if __name__ == '__main__':
     else:
         print("[FAILED]: Failed to build lighting")
 
+    if success:
+        success = upload_to_steam()
+        pass
+    else:
+        print("[FAILEd]: Failed to build and package the game")
+
     if not success:
-        print("[FAILED]: Failed to build and package the project")
+        print("[FAILED]: Failed to upload to steam")

@@ -1,4 +1,4 @@
-from os import path
+import os
 
 from configparser import ConfigParser
 from configparser import ExtendedInterpolation
@@ -6,7 +6,7 @@ from configparser import ExtendedInterpolation
 config = ConfigParser( interpolation=ExtendedInterpolation() )
 
 def parse_env_variables( configParser, file ):
-    if path.exists( file ):
+    if os.path.exists( file ):
         config.read( file )
         return True
     else:

@@ -55,10 +55,8 @@ def update_version_number( major, minor, hotfix ):
     if not found_version:
         print("Failed to find version number")
 
-    print(version_number)
     # Update the version number
     new_version = get_version_number(major, minor, hotfix, version_number)
-    print( new_version)
 
     # Check the file out from P4
     p4 = P4()
@@ -87,7 +85,7 @@ def update_version_number( major, minor, hotfix ):
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Updated the version number to ' + new_version
-        # test = p4.run_submit( change ) 
+        p4.run_submit( change ) 
 
         return True
     except P4Exception:
