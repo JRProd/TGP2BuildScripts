@@ -4,11 +4,12 @@ from . import Environment as env
 
 game_name = env.get_env_variable('Game', 'game_name')
 
-def upload_to_steam():
+def upload_to_steam( log_file ):
 
-    print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 5: Starting Upload to Steam'.format( game_name ) )
-    print( '----------------------------------------------------------------------------------------------------' )
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.write( '{} - Step 5: Starting Upload to Steam\n'.format( game_name ) )
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.flush()
 
     user_name = env.get_env_variable( "Steam", "user_name" )
     user_password = env.get_env_variable( "Steam", "user_password" )
@@ -16,8 +17,9 @@ def upload_to_steam():
     steam_cmd = env.get_env_variable( "Steam", "steam_cmd" )
     app_build = env.get_env_variable( "Steam", "app_build" )
 
-    print(subprocess.run( [steam_dir + steam_cmd, "+login", user_name, user_password, "+run_app_build_http", steam_dir + app_build, "+quit"] ))
+    subprocess.run( [steam_dir + steam_cmd, "+login", user_name, user_password, "+run_app_build_http", steam_dir + app_build, "+quit"], stdout=log_file )
 
+    log_file.flush()
     return True
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from Scripts.UpdateVersionNumber import update_version_number
 from Scripts.UpdateFromP4 import update_from_P4
@@ -32,6 +33,7 @@ if __name__ == '__main__':
 
     build_dir = env.get_env_variable('Game', 'builds_dir')
     log_file = open( build_dir + args.output, 'w')
+    sys.stderr = log_file
 
     log_file.write( '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n' )
     log_file.write( 'Initiating Build Sequence\n' )
@@ -53,34 +55,21 @@ if __name__ == '__main__':
 
     if success and not args.no_lighting and (args.all or args.lighting):
         success = build_lighting( log_file )
+    if not success:
+        script_error(log_file, 'Failed to build the lighting')
 
+    if success and (args.all or args.build):
+        success = build_game( log_file )
+    if not success:
+        script_error( log_file, 'Failed to build and package the game')
 
-    # success = update_from_P4()
-    # if success:
-    #     success = update_version_number( major, minor, hotfix)
-    #     pass
-    # else:
-    #     print('[FAILED] Failed to update from perforce')
+    if success and (args.all or args.steam):
+        success = upload_to_steam( log_file )
+    if not success:
+        script_error( log_file, 'Failed to upload to steam')
 
-    # if success:
-    #     success = build_lighting()
-    #     pass
-    # else:
-    #     print('[FAILED]: Failed to update version number')
-
-    # if success:
-    #     success = build_game()
-    #     pass
-    # else:
-    #     print('[FAILED]: Failed to build lighting')
-
-    # if success:
-    #     success = upload_to_steam()
-    #     pass
-    # else:
-    #     print('[FAILEd]: Failed to build and package the game')
-
-    # if not success:
-    #     print('[FAILED]: Failed to upload to steam')
-
+    log_file.write('Sequence finished without error.\n')
+    log_file.write('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
     log_file.close()
+
+    quit(0)
