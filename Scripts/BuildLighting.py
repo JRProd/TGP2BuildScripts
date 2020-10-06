@@ -29,7 +29,7 @@ def build_lighting( log_file ):
         # For all the found maps create a mapping to the build data
         for found_map in found_maps:
             perforce_map_files.append( found_map)
-            perforce_map_files.append( found_map[0:found_map.index('.')] + '_BuildData.uasset' )
+            perforce_map_files.append( found_map[0:found_map.index('.')] + '_BuiltData.uasset' )
 
     log_file.write( '\n' )
     log_file.write('Found a total of {} maps to build lighting on\n'.format( (int)(len(perforce_map_files) / 2)))
