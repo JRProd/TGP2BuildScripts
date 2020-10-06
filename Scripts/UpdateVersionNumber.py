@@ -90,7 +90,7 @@ def update_version_number( log_file, major, minor ):
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Updated the version number to ' + new_version
-        # p4.run_submit( change )
+        p4.run_submit( change )
 
         log_file.write('New version number successfully submitted to perforce\n')
         log_file.flush()

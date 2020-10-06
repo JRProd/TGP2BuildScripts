@@ -66,7 +66,7 @@ def build_lighting( log_file ):
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Built lighting for the follow maps:\n' + '\n\t'.join(perforce_map_files)
-        # p4.run_submit( change ) 
+        p4.run_submit( change ) 
 
         log_file.write('Lighting successfully built and submitted\n')
         log_file.flush()
