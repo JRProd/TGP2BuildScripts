@@ -8,27 +8,29 @@ from . import Environment as env
 
 game_name = env.get_env_variable('Game','game_name')
 
-def update_version_number( major, minor, hotfix ):
-    print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 2: Update the version number'.format( game_name ) )
-    print( '----------------------------------------------------------------------------------------------------' )
+def update_version_number( log_file, major, minor ):
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.write( '{} - Step 2: Update the version number\n'.format( game_name ) )
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
 
+    # Determine if automatic versioning is used by the config file
     try:
         automatic_versioning = env.get_env_variable('Version', 'automatic')
     
     # If no versioning disinction continue
     except Exception as e:
-        print('Automatic versioning system skipped because no [Version] automatic value found')
+        log_file.write('Automatic versioning system skipped because no [Version] automatic value found\n')
         return True
 
     if 'False' in automatic_versioning:
-        print('Automatic versioning system skipped because its disabled')
+        log_file.write('Automatic versioning system is disabled\n')
         return True
     elif not 'True' in automatic_versioning:
-        print('Unknown value {} in [Version] automatic. Expected "True"/"False" values')
+        log_file.write("Unknown value {} in [Version] automatic. Expected 'True'/'False' values\n".format(automatic_versioning) )
         return False
+    log_file.flush()
 
-    version_number = ""
+    version_number = ''
 
     # Open ini file
     version_ini = env.get_env_variable('Version', 'version_ini')
@@ -53,10 +55,13 @@ def update_version_number( major, minor, hotfix ):
             found_version = True
         
     if not found_version:
-        print("Failed to find version number")
+        log_file.write('Failed to find version number\n')
+        return False
 
     # Update the version number
-    new_version = get_version_number(major, minor, hotfix, version_number)
+    new_version = get_version_number(major, minor, version_number)
+    log_file.write('Version number updated to {}\n'.format(new_version))
+    log_file.flush()
 
     # Check the file out from P4
     p4 = P4()
@@ -85,19 +90,25 @@ def update_version_number( major, minor, hotfix ):
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Updated the version number to ' + new_version
-        p4.run_submit( change ) 
+        # p4.run_submit( change )
+
+        log_file.write('New version number successfully submitted to perforce\n')
+        log_file.flush()
 
         return True
     except P4Exception:
+        log_file.write('Perforce error encountered')
         for e in p4.errors:
-            print(e)
+            log_file.write( str(e) )
 
+        log_file.flush()
         return False
     except Exception as e:
-        print(e)
+        log_file.write( str(e) )
+        log_file.flush()
         return False
 
-def get_version_number(major, minor, hotfix, version):
+def get_version_number(major, minor, version):
     split_version = version.split('.')
     if major:
         split_version[0] = str(int(split_version[0]) + 1)
@@ -110,10 +121,7 @@ def get_version_number(major, minor, hotfix, version):
         split_version[2] = '0'
         return '.'.join(split_version)
 
-    if hotfix:
-        split_version[2] = str(int(split_version[2]) + 1)
-        return '.'.join(split_version)
+    # If not major or minor, must be hotfix
+    split_version[2] = str(int(split_version[2]) + 1)
+    return '.'.join(split_version)
  
-
-if __name__ == '__main__':
-    update_version_number(False, False, True)

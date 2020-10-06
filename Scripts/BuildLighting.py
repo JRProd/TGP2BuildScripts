@@ -7,10 +7,10 @@ from . import Environment as env
 
 game_name = env.get_env_variable('Game','game_name')
 
-def build_lighting():
-    print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 3: Starting Lighting Build'.format( game_name ) )
-    print( '----------------------------------------------------------------------------------------------------' )
+def build_lighting( log_file ):
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.write( '{} - Step 3: Starting Lighting Build\n'.format( game_name ) )
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
 
     maps = []
 
@@ -18,12 +18,16 @@ def build_lighting():
     map_dir = env.get_env_variable('Game', 'map_dir')
     map_names = env.get_env_variable('Game', 'maps').split(';')
 
+    log_file.write('Building lighting for these maps: ')
     for map in map_names:
+        log_file.write(map + " ")
         full_path_map = map_dir + map
         maps.append( full_path_map + '.umap')
 
         maps.append( full_path_map + '_BuiltData.uasset')
 
+    log_file.write('\n')
+    log_file.flush()
 
      # Check the file out from P4
     p4 = P4()
@@ -44,27 +48,32 @@ def build_lighting():
         # Build the lighting
         uproject_file = env.get_env_variable( "Game", "uproject_file" )
         ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )
-        print(subprocess.run( [ ue4_binaries_dir + 'UE4Editor-Cmd.exe', uproject_file, '-verbose', "-p4", "-submit", "-run=resavepackages" , "-buildlighting", "-quality=production", "-allowcommandletrendering", "-map" + ' '.join(maps)] ) )
+        subprocess.run( [ ue4_binaries_dir + 'UE4Editor-Cmd.exe', uproject_file, '-verbose', "-p4", "-submit", "-run=resavepackages" , "-buildlighting", "-quality=production", "-allowcommandletrendering", "-map" + ' '.join(maps)], stdout=log_file )
+        log_file.flush()
 
         # Add maps back for addition to p4
         for map in maps:
-            print("adding " + map)
+            log_file.write("adding " + map + '\n')
             p4.run('add', map)
+        log_file.flush()
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Built lighting for the follow maps:\n' + '\n\t'.join(maps)
-        p4.run_submit( change ) 
+        # p4.run_submit( change ) 
+
+        log_file.write('Lighting successfully built and submitted\n')
+        log_file.flush()
 
         return True
     except P4Exception:
-        print('ERROR: Error capture in P4')
+        log_file.write('Perforce error encountered')
         for e in p4.errors:
-            print(e)
+            log_file.write( str(e) )
+
+        log_file.flush()
 
         return False
     except Exception as e:
-        print(e)
+        log_file.write( str(e) )
+        log_file.flush()
         return False
-
-if __name__ == '__main__':
-    build_lighting()

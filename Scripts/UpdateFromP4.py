@@ -39,10 +39,11 @@ files_synced = False
 
 game_name = env.get_env_variable('Game', 'game_name')
 
-def update_from_P4():
-    print( '----------------------------------------------------------------------------------------------------' )
-    print( '{} - Step 1: Update the local workspace for P4'.format( game_name ) )
-    print( '----------------------------------------------------------------------------------------------------' )
+def update_from_P4( log_file ):
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.write( '{} - Step 1: Update the local workspace for P4\n'.format( game_name ) )
+    log_file.write( '----------------------------------------------------------------------------------------------------\n' )
+    log_file.flush()
 
     # Perforce Settings
     p4.port = "129.119.63.244:1666"
@@ -52,16 +53,19 @@ def update_from_P4():
 
     # Connect to the perforce server
     success = p4.connect()
-    print( success )
+    log_file.write( str(success) )
+    log_file.write('\n')
+    log_file.flush()
 
     p4_thread = Threaded_Callback(1, p4_sync, p4_sync_callback)
     p4_thread.start()
     
     start_time = time.time()
     while( not files_synced ):
-        print( "Time Elapsed: {:.2f}".format( time.time() - start_time ), end='\r')
+        pass
 
-    print( 'Completed Perfoce Sync in {:.2f} seconds'.format( time.time() - start_time ) )
+    log_file.write( 'Completed Perfoce Sync in {:.2f} seconds\n'.format( time.time() - start_time ) )
+    log_file.flush()
 
     files_updated = 0
     files_deleted = 0
@@ -84,15 +88,16 @@ def update_from_P4():
         update_message += file['rev'] + " ) - "
         update_message += file['action']
 
-        print(update_message)
+        log_file.write(update_message)
+        log_file.write('\n')
+
+        if files_updated % 100 == 0:
+            log_file.flush()
 
     if files_deleted > 0:
-        print( '{} files marked for deleted in total'.format( files_deleted ) )
+        log_file.write( '{} files marked for deleted in total\n'.format( files_deleted ) )
     if files_updated == 0:
-        print( 'All files are current' )
+        log_file.write( 'All files are current\n' )
+    log_file.flush()
 
     return True
-
-if __name__ == '__main__':
-    update_from_P4()
-    
