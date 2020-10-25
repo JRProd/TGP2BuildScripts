@@ -17,10 +17,10 @@ def upload_to_steam( log_file ):
     steam_cmd = env.get_env_variable( "Steam", "steam_cmd" )
     app_build = env.get_env_variable( "Steam", "app_build" )
 
-    subprocess.run( [steam_dir + steam_cmd, "+login", user_name, user_password, "+run_app_build_http", steam_dir + app_build, "+quit"], stdout=log_file )
+    result = subprocess.run( [steam_dir + steam_cmd, "+login", user_name, user_password, "+run_app_build_http", steam_dir + app_build, "+quit"], stdout=log_file )
 
     log_file.flush()
-    return True
+    return result.returncode == 0
 
 if __name__ == '__main__':
     upload_to_steam()

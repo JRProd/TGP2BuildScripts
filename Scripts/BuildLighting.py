@@ -32,7 +32,6 @@ def build_lighting( log_file ):
             perforce_map_files.append( found_map[0:found_map.index('.')] + '_BuiltData.uasset' )
 
     log_file.write( '\n' )
-    log_file.write('Found a total of {} maps to build lighting on\n'.format( (int)(len(perforce_map_files) / 2)))
     log_file.flush()
 
      # Check the file out from P4
@@ -47,7 +46,7 @@ def build_lighting( log_file ):
         # Checkout requested maps
         for map in perforce_map_files:
             try:
-                p4.run('edit', map)
+                test = p4.run('edit', map)
             except:
                 log_file.write('Failed to open map {}\n'.format(map))
                 log_file.flush()
@@ -55,14 +54,19 @@ def build_lighting( log_file ):
         # Build the lighting
         uproject_file = env.get_env_variable( "Game", "uproject_file" )
         ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )
-        subprocess.run( [ ue4_binaries_dir + 'UE4Editor-Cmd.exe', uproject_file, "-p4", "-submit", "-run=resavepackages" , "-buildlighting", "-quality=Production", "-AllowCommandletRendering", "-map" + ' '.join(map_names)], stdout=log_file )
-        log_file.flush()
 
-        # Add maps back for addition to p4
-        for map in perforce_map_files:
-            log_file.write("adding " + map + '\n')
-            p4.run('add', map)
+        # For some reason, the delimiter for the maps is a + sign
+        map_list = '+'.join([map + '.umap' for map in map_names])
+        result = subprocess.run( [ ue4_binaries_dir + 'UE4Editor-Cmd.exe', uproject_file, "-p4",  "-submit", "-run=resavepackages" , "-buildlighting", "-quality=Production", "-allowcommandletrendering", '-map=' + map_list ], stdout=log_file )
+    
+        # If the lighting build fails
+        if( result.returncode != 0 ):
+            p4.run('revert', -c, 'default', '//...')
+            return False
         log_file.flush()
+        
+        # Reverts all unchanged files before submitting
+        p4.run('revert', '-a')
 
         change = p4.fetch_change()
         change._description = '[Daily_Builds] Built lighting for the follow maps:\n' + '\n\t'.join(perforce_map_files)

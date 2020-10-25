@@ -19,10 +19,10 @@ def build_game( log_file ):
     ue4_batchfiles_dir = env.get_env_variable( 'Local', "ue4_batchfiles_dir" )
     ue4_binaries_dir = env.get_env_variable( 'Local', "ue4_binaries_dir" )
 
-    subprocess.run( [ ue4_batchfiles_dir + 'RunUAT.bat', "BuildCookRun", "-project=" + uproject_file, "-noP4", "-nocompile", "-nocompileeditor", "-installed", "-cook", "-stage", "-archive", "-archivedirectory=" + builds_dir, "-package", "-clientconfig=Development", "-ue4exe=" + ue4_binaries_dir + "UE4Editor-Cmd.exe", "-pak", "-prereqs", "-nodebuginfo", "-targetplatform=Win64", "-build", "-CrashReporter", "-utf8output" ], stdout=log_file )
+    result = subprocess.run( [ ue4_batchfiles_dir + 'RunUAT.bat', "BuildCookRun", "-project=" + uproject_file, "-noP4", "-nocompile", "-nocompileeditor", "-installed", "-cook", "-stage", "-archive", "-archivedirectory=" + builds_dir, "-package", "-clientconfig=Development", "-ue4exe=" + ue4_binaries_dir + "UE4Editor-Cmd.exe", "-pak", "-prereqs", "-nodebuginfo", "-targetplatform=Win64", "-build", "-CrashReporter", "-utf8output" ], stdout=log_file )
 
     log_file.flush()
-    return True
+    return result.returncode == 0
 
 def zip_build():
     latest_build_dir = env.get_env_variable( "Game", "latest_build_dir" )
