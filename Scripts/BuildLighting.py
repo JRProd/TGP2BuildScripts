@@ -61,7 +61,7 @@ def build_lighting( log_file ):
     
         # If the lighting build fails
         if( result.returncode != 0 ):
-            p4.run('revert', -c, 'default', '//...')
+            p4.run('revert', '-c', 'default', '//...')
             return False
         log_file.flush()
         
