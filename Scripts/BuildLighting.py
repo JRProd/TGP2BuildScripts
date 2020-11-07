@@ -50,6 +50,8 @@ def build_lighting( log_file ):
             except:
                 log_file.write('Failed to open map {}\n'.format(map))
                 log_file.flush()
+
+        p4.disconnect()
         
         # Build the lighting
         uproject_file = env.get_env_variable( "Game", "uproject_file" )
@@ -59,6 +61,7 @@ def build_lighting( log_file ):
         map_list = '+'.join([map + '.umap' for map in map_names])
         result = subprocess.run( [ ue4_binaries_dir + 'UE4Editor-Cmd.exe', uproject_file, "-p4",  "-submit", "-run=resavepackages" , "-buildlighting", "-quality=Production", "-allowcommandletrendering", '-map=' + map_list ], stdout=log_file )
     
+        p4.connect()
         # If the lighting build fails
         if( result.returncode != 0 ):
             p4.run('revert', '-c', 'default', '//...')
@@ -77,7 +80,7 @@ def build_lighting( log_file ):
 
         return True
     except P4Exception:
-        log_file.write('Perforce error encountered')
+        log_file.write('Perforce error encountered ')
         for e in p4.errors:
             log_file.write( str(e) )
 
