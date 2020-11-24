@@ -1,6 +1,6 @@
 import subprocess
 
-import Environment as env
+from . import Environment as env
 
 game_name = env.get_env_variable('Game', 'game_name')
 

@@ -23,7 +23,7 @@ def build_lighting( log_file ):
     for map in map_names:
         log_file.write(map + " ")
 
-        # Find all maps, and submaps that match <dir>\**\<map>*.umap
+        # Find all maps, and submaps that match <dir>\**\<map>.umap
         found_maps = glob.glob(map_dir + '\**\\' + map + '*.umap', recursive=True)
         
         # For all the found maps create a mapping to the build data

@@ -7,6 +7,7 @@ from Scripts.BuildLighting import build_lighting
 from Scripts.BuildGame import build_game
 from Scripts.UploadToDeletedNighly import upload_to_deleted_nightly
 from Scripts.UploadToSteam import upload_to_steam
+from Scripts.BuildInstaller import build_installer
 
 from Scripts import Environment as env
 
@@ -37,6 +38,7 @@ if __name__ == '__main__':
 
     log_file.write( '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n' )
     log_file.write( 'Initiating Build Sequence\n' )
+
 
     # If no commands are give, assume the user wants to run the full suite of scripts
     args.all = True if not (args.perforce or args.version or args.lighting or args.build or args.steam) else args.all
