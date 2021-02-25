@@ -95,11 +95,11 @@ user_name = Steam Name
 ; Your build account's Steam password
 user_password = Steam Password
 ; The directory of the Steamworks ContentBuilder tool
-steam_dir = ${Local:ue4_engine_dir}Source\ThirdParty\Steamworks\SteamSDKv1XX\sdk\tools\ContentBuilder\
-; The path to the SteamCMD command line tool
-steam_cmd = ${steam_cmd}builder\steamcmd.exe
-; The path to your Steam build script
-app_build = ${steam_cmd}scripts\app_build_1000.vdf
+steam_dir = ${Local:ue4_engine_dir}Source\ThirdParty\Steamworks\Steamv1XX\sdk\tools\ContentBuilder\
+; The relative path to the SteamCMD command line tool, from $steam_dir
+steam_cmd = .\builder\steamcmd.exe
+; The relative path to the Steam build metadata, from $steam_dir
+app_build = .\scripts\app_build_1000.vdf
 ```
 
 ## Use
