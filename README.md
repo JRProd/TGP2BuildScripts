@@ -13,6 +13,7 @@ run the p4python MSI. It should detect your python install (e.g. "Use Python 3.8
 Additionally, you need
 - [Inno Setup](https://jrsoftware.org/isdl.php) to actually pack the installer.
 - The latest [Steamworks SDK](https://partner.steamgames.com/downloads/steamworks_sdk.zip)
+- The Visual Studio components for both "Desktop Development with C++" and ".NET Desktop Development"
 
 Clone the buildscripts into their own folder, _independent_ of your project folder. For example, I have mine at just
 `D:\TGP2BuildScripts`. The buildscripts will run from here and clone/build your project.
