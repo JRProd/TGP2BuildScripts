@@ -17,6 +17,10 @@ Additionally, you need
 Clone the buildscripts into their own folder, _independent_ of your project folder. For example, I have mine at just
 `D:\TGP2BuildScripts`. The buildscripts will run from here and clone/build your project.
 
+You will want to set up a P4 workspace just for doing builds, so that builds don't interfere with development.
+Additionally, every file that's not required for builds that's mapped into the workspace is another file that has
+to be synced over the network, slowing down the process.
+
 ## Configuration
 
 In your build scripts folder, create a `config.ini`. This tells the buildscripts specific information about your build.
