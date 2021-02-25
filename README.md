@@ -39,6 +39,10 @@ uproject_file = ${project_dir}PigmentPenguins.uproject
 builds_dir = ${Local:base_dir}Build_Dir\
 ; The directory where the latest build ends up
 latest_build_dir = ${builds_dir}WindowsNoEditor
+; The directory that contains your map files
+map_dir = ${project_dir}Content\Levels\Stages\
+; A space-separated list of map prefixes to build lighting for
+maps = PLVL_
 
 
 [Perforce]
